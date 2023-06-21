@@ -1276,7 +1276,7 @@ void CConPanel::PaintBackground()
 
 	int wide = GetWide();
 	char ver[ 100 ];
-	Q_snprintf(ver, sizeof( ver ), "Source Engine %i (build %d)", PROTOCOL_VERSION, build_number() );
+	Q_snprintf(ver, sizeof( ver ), "root_GetDLie404-s ClientMod Source Engine %i (build %d)", PROTOCOL_VERSION, build_number() );
 	wchar_t unicode[ 200 ];
 	g_pVGuiLocalize->ConvertANSIToUnicode( ver, unicode, sizeof( unicode ) );
 
