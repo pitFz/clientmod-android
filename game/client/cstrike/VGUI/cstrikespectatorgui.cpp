@@ -35,9 +35,9 @@ extern ConVar overview_tracks;
 extern ConVar overview_locked;
 extern ConVar overview_alpha;
 extern ConVar cl_radar_square_with_scoreboard;
-ConVar cl_radaralpha( "cl_radaralpha", "200", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, NULL, true, 0, true, 255 );
+ConVar cl_radaralpha( "cl_radaralpha", "255", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, NULL, true, 0, true, 255 );
 ConVar cl_radar_rotate( "cl_radar_rotate", "1", FCVAR_ARCHIVE, "1" );
-ConVar cl_radar_scale( "cl_radar_scale", "0.7", FCVAR_ARCHIVE, "Sets the radar scale. Valid values are 0.25 to 1.0.", true, 0.25f, true, 1.0f );
+ConVar cl_radar_scale( "cl_radar_scale", "2.0", FCVAR_ARCHIVE, "Sets the radar scale. Valid values are 1.0 to 3.0", true, 1.0f, true, 3.0f );
 
 void PreferredOverviewModeChanged( IConVar *pConVar, const char *oldString, float flOldValue )
 {
