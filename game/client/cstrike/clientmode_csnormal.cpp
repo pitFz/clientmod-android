@@ -66,6 +66,8 @@ void __MsgFunc_MatchEndConditions( bf_read &msg );
 
 class CHudChat;
 
+ConVar cl_radar_square_with_scoreboard( "cl_radar_square_with_scoreboard", "1", FCVAR_ARCHIVE, "If set, the radar will toggle to square when the scoreboard is visible." );
+
 ConVar default_fov( "default_fov", "90", FCVAR_CHEAT );
 
 IClientMode *g_pClientMode = NULL;
@@ -439,7 +441,7 @@ ClientModeCSNormal* GetClientModeCSNormal()
 
 float ClientModeCSNormal::GetViewModelFOV( void )
 {
-	return 74.0f;
+	return 90.0f;
 }
 
 int ClientModeCSNormal::GetDeathMessageStartHeight( void )
