@@ -1573,7 +1573,39 @@ void CWeaponCSBase::DefaultTouch(CBaseEntity *pOther)
 		// Make the player play his reload animation.
 		pPlayer->DoAnimationEvent( PLAYERANIMEVENT_RELOAD );
 	}
+	/*	ConVar inspect("+inspect", "", FCVAR_CLIENTDLL, "Inspect weapon command");
 
+void HandleInput()
+	{
+    //  +inspect" 
+    if (inputCommand == "+inspect")
+    {
+        PerformInspectAction();
+    }
+
+    // ...
+}
+
+	void PerformInspectAction()
+	{
+		// Опознать текущее оружие игрока
+		CBaseCombatWeapon* pWeapon = pPlayer->GetActiveWeapon();
+
+		if (pWeapon)
+		{
+			// Триггер для включения анимации
+			pWeapon->Inspect();
+		}
+}
+
+	void CC_Inspect()
+	{
+		PerformInspectAction();
+	}
+
+	// Регистрация CVar-а
+	static ConCommand inspect_cmd("+inspect", CC_Inspect, "Inspect weapon command", FCVAR_CLIENTDLL);
+	*/
 #endif
 
 
@@ -1618,9 +1650,17 @@ bool CWeaponCSBase::IsUseable()
 	float	g_lateralBob = 0;
 	float	g_verticalBob = 0;
 
-	static ConVar	cl_bobcycle( "cl_bobcycle","0.8", FCVAR_CHEAT );
-	static ConVar	cl_bob( "cl_bob","0.002", FCVAR_CHEAT );
-	static ConVar	cl_bobup( "cl_bobup","0.5", FCVAR_CHEAT );
+	static ConVar	cl_bobcycle( "cl_bobcycle","0.8", FCVAR_ARCHIVE );
+	static ConVar	cl_bob( "cl_bob","0.002", FCVAR_ARCHIVE );
+	static ConVar	cl_bobup( "cl_bobup","0.5", FCVAR_ARCHIVE );
+
+	// Register these cvars if needed for easy tweaking
+	static ConVar	v_iyaw_cycle( "v_iyaw_cycle", "2", FCVAR_ARCHIVE );
+	static ConVar	v_iroll_cycle( "v_iroll_cycle", "0.5", FCVAR_ARCHIVE );
+	static ConVar	v_ipitch_cycle( "v_ipitch_cycle", "1", FCVAR_ARCHIVE );
+	static ConVar	v_iyaw_level( "v_iyaw_level", "0.3", FCVAR_ARCHIVE );
+	static ConVar	v_iroll_level( "v_iroll_level", "0.1", FCVAR_ARCHIVE );
+	static ConVar	v_ipitch_level( "v_ipitch_level", "0.3", FCVAR_ARCHIVE );
 
 	//-----------------------------------------------------------------------------
 	// Purpose:
@@ -1650,11 +1690,11 @@ bool CWeaponCSBase::IsUseable()
 
 		//Find the speed of the player
 		float speed = player->GetLocalVelocity().Length2D();
-		float flmaxSpeedDelta = MAX( 0, (gpGlobals->curtime - lastbobtime) * 320.0f );
+		float flmaxSpeedDelta = MAX( 0, (gpGlobals->curtime - lastbobtime) * 250.0f );
 
 		// don't allow too big speed changes
 		speed = clamp( speed, lastspeed-flmaxSpeedDelta, lastspeed+flmaxSpeedDelta );
-		speed = clamp( speed, -320, 320 );
+		speed = clamp( speed, -250, 250 );
 
 		lastspeed = speed;
 
@@ -1663,7 +1703,7 @@ bool CWeaponCSBase::IsUseable()
 
 
 
-		float bob_offset = RemapVal( speed, 0, 320, 0.0f, 1.0f );
+		float bob_offset = RemapVal( speed, 0, 250, 0.0f, 1.0f );
 
 		bobtime += ( gpGlobals->curtime - lastbobtime ) * bob_offset;
 		lastbobtime = gpGlobals->curtime;
@@ -1682,7 +1722,7 @@ bool CWeaponCSBase::IsUseable()
 		}
 
 		g_verticalBob = speed*0.005f;
-		g_verticalBob = g_verticalBob*0.3 + g_verticalBob*0.7*sin(cycle);
+		g_verticalBob = g_verticalBob*0.21 + g_verticalBob*0.49*sin(cycle);
 
 		g_verticalBob = clamp( g_verticalBob, -7.0f, 4.0f );
 
@@ -1700,7 +1740,7 @@ bool CWeaponCSBase::IsUseable()
 		}
 
 		g_lateralBob = speed*0.005f;
-		g_lateralBob = g_lateralBob*0.3 + g_lateralBob*0.7*sin(cycle);
+		g_lateralBob = g_lateralBob*0.21 + g_lateralBob*0.49*sin(cycle);
 		g_lateralBob = clamp( g_lateralBob, -7.0f, 4.0f );
 
 		//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
@@ -1733,7 +1773,7 @@ bool CWeaponCSBase::IsUseable()
 
 		angles[ YAW ]	-= g_lateralBob  * 0.3f;
 
-	//	VectorMA( origin, g_lateralBob * 0.2f, right, origin );
+		VectorMA( origin, g_lateralBob * 0.2f, right, origin );
 	}
 
 #else
