@@ -441,7 +441,7 @@ ClientModeCSNormal* GetClientModeCSNormal()
 
 float ClientModeCSNormal::GetViewModelFOV( void )
 {
-	return 90.0f;
+	return 74.0f;
 }
 
 int ClientModeCSNormal::GetDeathMessageStartHeight( void )
