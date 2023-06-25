@@ -732,7 +732,7 @@ void CNetGraphPanel::DrawTextFields( int graphvalue, int x, int y, int w, netban
 
 	int textTall = surface()->GetFontTall( font );
 
-	Q_snprintf( sz, sizeof( sz ), "fps:%4i   ping: %i ms", (int)(1.0f / m_Framerate), (int)(m_AvgLatency*1000.0f) );
+	Q_snprintf( sz, sizeof( sz ), "fps: %5i var: %4.1f ms ping: %i ms", (int)(1.0f / m_Framerate), m_flServerFramerateStdDeviation*1000.0f, (int)(m_AvgLatency*1000.0f) );
 
 	g_pMatSystemSurface->DrawColoredText( font, x, y, GRAPH_RED, GRAPH_GREEN, GRAPH_BLUE, 255, "%s", sz );
 
