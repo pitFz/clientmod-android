@@ -753,10 +753,3 @@ bool CBaseViewModel::GetAttachmentVelocity( int number, Vector &originVel, Quate
 
 #endif
 
-BEGIN_NETWORK_TABLE( CHandsViewModel, DT_HandsViewModel )
-#ifndef CLIENT_DLL
-	SendPropEHandle( SENDINFO_NAME( m_hMoveParent, moveparent ) ),
-#else
-	RecvPropInt( RECVINFO_NAME( m_hNetworkMoveParent, moveparent ), 0, RecvProxy_IntToMoveParent ),
-#endif
-END_NETWORK_TABLE()

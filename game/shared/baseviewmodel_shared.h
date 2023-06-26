@@ -217,18 +217,6 @@ private:
 	typedef CHandle<CVGuiScreen>	ScreenHandle_t;
 	CUtlVector<ScreenHandle_t>	m_hScreens;
 };
-class CHandsViewModel : public CBaseViewModel
-{
-	DECLARE_CLASS( CHandsViewModel, CBaseViewModel );
 
-public:
-	DECLARE_NETWORKCLASS();
-
-#ifdef CLIENT_DLL
-
-	virtual int		InternalDrawModel( int flags );
-
-#endif
-};
 
 #endif // BASEVIEWMODEL_SHARED_H
