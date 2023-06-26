@@ -26,7 +26,7 @@ class CVGuiScreen;
 #define CBaseCombatWeapon C_BaseCombatWeapon
 #endif
 
-#define VIEWMODEL_INDEX_BITS 1
+#define VIEWMODEL_INDEX_BITS 2
 
 class CBaseViewModel : public CBaseAnimating, public IHasOwner
 {
@@ -88,6 +88,10 @@ public:
 
 	Vector					m_vecLastFacing;
 
+	CNetworkVar( bool, m_bShouldIgnoreOffsetAndAccuracy );
+	virtual void			SetShouldIgnoreOffsetAndAccuracy( bool bIgnore ) { m_bShouldIgnoreOffsetAndAccuracy = bIgnore; }
+
+
 	// Only support prediction in TF2 for now
 #if defined( INVASION_DLL ) || defined( INVASION_CLIENT_DLL )
 	// All predicted weapons need to implement and return true
@@ -127,8 +131,13 @@ public:
 	virtual bool			Interpolate( float currentTime );
 
 	bool					ShouldFlipViewModel();
+	virtual bool			ShouldFlipModel( void ) { return ShouldFlipViewModel();}
 	void					UpdateAnimationParity( void );
-
+	virtual void			PostBuildTransformations( CStudioHdr *pStudioHdr, Vector *pos, Quaternion q[] );
+	Vector m_vecCamDriverLastPos;
+	QAngle m_angCamDriverLastAng;
+	float m_flCamDriverAppliedTime;
+	float m_flCamDriverWeight;
 	virtual void			ApplyBoneMatrixTransform( matrix3x4_t& transform );
 
 	virtual bool			ShouldDraw();
@@ -162,7 +171,7 @@ public:
 	
 	CBaseCombatWeapon		*GetWeapon() const { return m_hWeapon.Get(); }
 
-#ifdef CLIENT_DLL
+
 	virtual bool			ShouldResetSequenceOnNewModel( void ) { return false; }
 
 	// Attachments
@@ -171,7 +180,6 @@ public:
 	virtual bool			GetAttachment( int number, Vector &origin );
 	virtual	bool			GetAttachment( int number, Vector &origin, QAngle &angles );
 	virtual bool			GetAttachmentVelocity( int number, Vector &originVel, Quaternion &angleVel );
-#endif
 
 private:
 	CBaseViewModel( const CBaseViewModel & ); // not defined, not accessible
@@ -197,7 +205,10 @@ private:
 #if defined( CLIENT_DLL )
 	int						m_nOldAnimationParity;
 #endif
+	public:
+	float					m_fCycleOffset;
 
+private:
 
 	typedef CHandle< CBaseCombatWeapon > CBaseCombatWeaponHandle;
 	CNetworkVar( CBaseCombatWeaponHandle, m_hWeapon );
@@ -205,6 +216,19 @@ private:
 	// Control panel
 	typedef CHandle<CVGuiScreen>	ScreenHandle_t;
 	CUtlVector<ScreenHandle_t>	m_hScreens;
+};
+class CHandsViewModel : public CBaseViewModel
+{
+	DECLARE_CLASS( CHandsViewModel, CBaseViewModel );
+
+public:
+	DECLARE_NETWORKCLASS();
+
+#ifdef CLIENT_DLL
+
+	virtual int		InternalDrawModel( int flags );
+
+#endif
 };
 
 #endif // BASEVIEWMODEL_SHARED_H
