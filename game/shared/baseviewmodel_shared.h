@@ -87,7 +87,6 @@ public:
 	}
 
 	Vector					m_vecLastFacing;
-
 	CNetworkVar( bool, m_bShouldIgnoreOffsetAndAccuracy );
 	virtual void			SetShouldIgnoreOffsetAndAccuracy( bool bIgnore ) { m_bShouldIgnoreOffsetAndAccuracy = bIgnore; }
 
@@ -131,13 +130,8 @@ public:
 	virtual bool			Interpolate( float currentTime );
 
 	bool					ShouldFlipViewModel();
-	virtual bool			ShouldFlipModel( void ) { return ShouldFlipViewModel();}
 	void					UpdateAnimationParity( void );
-	virtual void			PostBuildTransformations( CStudioHdr *pStudioHdr, Vector *pos, Quaternion q[] );
-	Vector m_vecCamDriverLastPos;
-	QAngle m_angCamDriverLastAng;
-	float m_flCamDriverAppliedTime;
-	float m_flCamDriverWeight;
+	
 	virtual void			ApplyBoneMatrixTransform( matrix3x4_t& transform );
 
 	virtual bool			ShouldDraw();
