@@ -873,8 +873,51 @@ void CL_Connect( const char *address, const char *pszSourceTag )
 	gfExtendedError = false;
 }
 
+int CheckForMaterialWH(const char* path, int& count)
+{
+	extern IFileSystem *g_pFileSystem;
+	FileFindHandle_t fh;
+	char searchPath[MAX_PATH];
+	Q_snprintf( searchPath, sizeof( searchPath ), "%s/*", path );
+	for (const char *pFile = g_pFileSystem->FindFirstEx(searchPath, "MOD", &fh); pFile && *pFile; pFile = g_pFileSystem->FindNext(fh))
+	{
+		char filepath[MAX_PATH];
+		Q_snprintf(filepath, sizeof(filepath), "%s/%s", path, pFile );
+		if(g_pFileSystem->FindIsDirectory(fh))
+		{
+			if (Q_strcmp(pFile, ".") != 0 && Q_strcmp(pFile, "..") != 0)
+			CheckForMaterialWH(filepath, count);
+		}
+		else if (Q_strstr(pFile, ".vmt") && !Q_strstr(pFile, "overlay.vmt"))
+		{
+			KeyValues *kv = new KeyValues("");
+			kv->LoadFromFile(g_pFullFileSystem, filepath );
+			if (kv->FindKey("$translucent") && kv != NULL)
+				count++;
+			kv->deleteThis();
+		}
+
+	}
+	g_pFileSystem->FindClose(fh);
+	return count;
+}
+
+CON_COMMAND(fuck,"Print num of keys")
+{
+	int count = 0;
+	Msg("%d\n", CheckForMaterialWH("materials", count));
+}
+
 CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 {
+	int count = 0;
+	if (CheckForMaterialWH("materials", count) > 950)
+	{
+		Color red(  200,  20,  20, 255 );
+		ConColorMsg(red, "The resources did not pass validation\nAdvice: use clear resources and do not hack!\n");
+		Host_Disconnect( true );
+		return;
+	}
 	// Default command processing considers ':' a command separator,
 	// and we donly want spaces to count.  So we'll need to re-split the arg string
 	CUtlVector<char*> vecArgs;
@@ -898,6 +941,15 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
 {
+	int count = 0;
+	if (CheckForMaterialWH("materials", count) > 950)
+	{
+		Color red(  200,  20,  20, 255 );
+		ConColorMsg(red, "The resources did not pass validation\nAdvice: use clear resources and do not hack!\n");
+		Host_Disconnect( true );
+		return;
+	}
+	
 	if ( !CBaseClientState::ConnectMethodAllowsRedirects() )
 	{
 		ConMsg( "redirect: Current connection method does not allow silent redirects.\n");
