@@ -1771,6 +1771,24 @@ void C_BaseAnimating::MaintainSequenceTransitions( IBoneSetup &boneSetup, float 
 		m_nPrevNewSequenceParity = m_nNewSequenceParity;
 		return;
 	}
+	
+	if ( IsViewModel() && m_nNewSequenceParity != m_nPrevNewSequenceParity && !IsSequenceLooping( GetSequence() ) )
+	{
+		C_BaseViewModel *pViewModel = assert_cast< C_BaseViewModel* >(this);
+		C_BasePlayer *pPlayer = ToBasePlayer( pViewModel->GetOwner() );
+		if ( pPlayer && pPlayer->IsHoldingLookAtWeapon() )
+		{
+			// If we're setting a view model to play the same sequence we need to force the cycle back to zero!
+			// For looking at your weapon the client and server timings need to match up so that it can loop properly!
+			pViewModel->m_fCycleOffset = -1.0f * ((gpGlobals->curtime - m_flAnimTime) * GetSequenceCycleRate( GetModelPtr(), GetSequence() ));
+			flCycle = 0.0f;
+		}
+		else
+		{
+			// Non-lookat animations don't need this offset goofiness
+			pViewModel->m_fCycleOffset = 0.0f;
+		}
+	}
 
 	m_SequenceTransitioner.CheckForSequenceChange( 
 		boneSetup.GetStudioHdr(),
@@ -3935,10 +3953,33 @@ void C_BaseAnimating::FireEvent( const Vector& origin, const QAngle& angles, int
 		}
 		break;
 
+		case AE_BEGIN_TAUNT_LOOP:
+		{
+			if ( IsViewModel() )
+			{
+				C_BaseViewModel *pViewModel = assert_cast< C_BaseViewModel* >( this );
+				C_BaseCombatWeapon *pWeapon = pViewModel->GetOwningWeapon();
+
+				if ( pWeapon )
+				{
+					C_BasePlayer *pPlayer = dynamic_cast< C_BasePlayer* >( pWeapon->GetOwner() );
+					if ( pPlayer && pPlayer->IsHoldingLookAtWeapon() )
+					{
+						float flCycle = GetCycle();
+						pViewModel->SetCycle( V_atof( options ) );
+						pViewModel->m_fCycleOffset += ( GetCycle() - flCycle );
+					}
+				}
+			}
+		}
+		break;
+
 	default:
 		break;
 	}
+	
 }
+
 
 //-----------------------------------------------------------------------------
 // Purpose: These events are all obsolete events, left here to support old games.

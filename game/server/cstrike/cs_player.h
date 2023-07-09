@@ -356,6 +356,11 @@ public:
 	void InitVCollision( const Vector &vecAbsOrigin, const Vector &vecAbsVelocity );
 	void VPhysicsShadowUpdate( IPhysicsObject *pPhysics );
 	
+	virtual bool IsLookingAtWeapon( void ) const { return m_bIsLookingAtWeapon; }
+	virtual bool IsHoldingLookAtWeapon( void ) const { return m_bIsHoldingLookAtWeapon; }
+	virtual void StopLookingAtWeapon( void ) { m_bIsLookingAtWeapon = false; m_bIsHoldingLookAtWeapon = false; }
+	void ModifyTauntDuration( float flTimingChange ) { m_flLookWeaponEndTime -= flTimingChange; }
+
 	bool HasShield() const;
 	bool IsShieldDrawn() const;
 	void GiveShield( void );
@@ -451,6 +456,8 @@ public:
 	void JoiningThink();
 
 	virtual bool ClientCommand( const CCommand &args );
+	
+	void LookAtHeldWeapon( void );
 
 	bool HandleCommand_JoinClass( int iClass );
 	bool HandleCommand_JoinTeam( int iTeam );
@@ -1019,7 +1026,10 @@ public:
 private:
     CNetworkArray( bool, m_bPlayerDominated, MAX_PLAYERS+1 );		// array of state per other player whether player is dominating other players
     CNetworkArray( bool, m_bPlayerDominatingMe, MAX_PLAYERS+1 );	// array of state per other player whether other players are dominating this player
+	CNetworkVar( bool, m_bIsLookingAtWeapon );
+	CNetworkVar( bool, m_bIsHoldingLookAtWeapon );
 
+	float m_flLookWeaponEndTime;
 	//=============================================================================
 	// HPE_BEGIN:
 	//=============================================================================
