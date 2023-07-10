@@ -1859,7 +1859,7 @@ bool CWeaponCSBase::IsUseable()
 		}
 
 		g_verticalBob = speed*0.005f;
-		g_verticalBob = g_verticalBob*0.21 + g_verticalBob*0.49*sin(cycle);
+		g_verticalBob = g_verticalBob*0.15 + g_verticalBob*0.35*sin(cycle);
 
 		g_verticalBob = clamp( g_verticalBob, -7.0f, 4.0f );
 
@@ -1877,7 +1877,7 @@ bool CWeaponCSBase::IsUseable()
 		}
 
 		g_lateralBob = speed*0.005f;
-		g_lateralBob = g_lateralBob*0.21 + g_lateralBob*0.49*sin(cycle);
+		g_lateralBob = g_lateralBob*0.15 + g_lateralBob*0.35*sin(cycle);
 		g_lateralBob = clamp( g_lateralBob, -7.0f, 4.0f );
 
 		//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
