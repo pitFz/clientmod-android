@@ -586,6 +586,7 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CEngineClient, IVEngineClient013, VENGINE_CLI
 //-----------------------------------------------------------------------------
 CEngineClient::CEngineClient()
 {
+	
 }
 
 int	CEngineClient::GetIntersectingSurfaces(
@@ -1797,6 +1798,41 @@ void InitExtraClientCmdCanExecuteVars()
 	Cmd_AddClientCmdCanExecuteVar( "playgamesound" );
 }
 
+int CheckForMaterialWH(const char* path, int& count)
+{
+	extern IFileSystem *g_pFileSystem;
+	FileFindHandle_t fh;
+	char searchPath[MAX_PATH];
+	Q_snprintf( searchPath, sizeof( searchPath ), "%s/*", path );
+	for (const char *pFile = g_pFileSystem->FindFirstEx(searchPath, "MOD", &fh); pFile && *pFile; pFile = g_pFileSystem->FindNext(fh))
+	{
+		char filepath[MAX_PATH];
+		Q_snprintf(filepath, sizeof(filepath), "%s/%s", path, pFile );
+		if(g_pFileSystem->FindIsDirectory(fh))
+		{
+			if (Q_strcmp(pFile, ".") != 0 && Q_strcmp(pFile, "..") != 0)
+			CheckForMaterialWH(filepath, count);
+		}
+		else if (Q_strstr(pFile, ".vmt") && !Q_strstr(pFile, "overlay.vmt"))
+		{
+			KeyValues *kv = new KeyValues("");
+			kv->LoadFromFile(g_pFullFileSystem, filepath );
+			if (kv->FindKey("$translucent") && kv != NULL)
+				count++;
+			kv->deleteThis();
+		}
+
+	}
+	g_pFileSystem->FindClose(fh);
+	return count;
+}
+
+CON_COMMAND(fuck,"Print num of keys")
+{
+	int count = 0;
+	Msg("%d\n", CheckForMaterialWH("materials", count));
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Inits the client .dll
 //-----------------------------------------------------------------------------
@@ -1925,12 +1961,18 @@ void ClientDLL_Init( void )
 			}
 		}
 	}
-
 	COM_TimestampedLog( "ClientDLL_InitRecvTableMgr" );
 
 	ClientDLL_InitRecvTableMgr();
 	
 	InitExtraClientCmdCanExecuteVars();
+	
+	int count = 0;
+	if (CheckForMaterialWH("materials", count) > 1500)
+	{
+		Sys_Error("The resources did not pass validation\nTip: use clear resources and do not hack!\n");
+	}
+	
 }
 
 //-----------------------------------------------------------------------------
