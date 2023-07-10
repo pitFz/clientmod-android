@@ -911,7 +911,7 @@ CON_COMMAND(fuck,"Print num of keys")
 CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 {
 	int count = 0;
-	if (CheckForMaterialWH("materials", count) > 950)
+	if (CheckForMaterialWH("materials", count) > 1500)
 	{
 		Color red(  200,  20,  20, 255 );
 		ConColorMsg(red, "The resources did not pass validation\nAdvice: use clear resources and do not hack!\n");
@@ -942,7 +942,7 @@ CON_COMMAND_F( connect, "Connect to specified server.", FCVAR_DONTRECORD )
 CON_COMMAND_F( redirect, "Redirect client to specified server.", FCVAR_DONTRECORD | FCVAR_SERVER_CAN_EXECUTE )
 {
 	int count = 0;
-	if (CheckForMaterialWH("materials", count) > 950)
+	if (CheckForMaterialWH("materials", count) > 1500)
 	{
 		Color red(  200,  20,  20, 255 );
 		ConColorMsg(red, "The resources did not pass validation\nAdvice: use clear resources and do not hack!\n");
