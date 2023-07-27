@@ -38,6 +38,28 @@ CPredictedViewModel::CPredictedViewModel()
 CPredictedViewModel::~CPredictedViewModel()
 {
 }
+#ifdef CLIENT_DLL
+extern ConVar	cmod_new_bobbing;
+#endif
+
+//-----------------------------------------------------------------------------
+// Purpose:  Adds head bob for off hand models
+//-----------------------------------------------------------------------------
+void CPredictedViewModel::AddViewModelBob( CBasePlayer *owner, Vector& eyePosition, QAngle& eyeAngles )
+{
+#ifdef CLIENT_DLL
+	if ( cmod_new_bobbing.GetBool() == false )
+		return;
+
+	// if we are an off hand view model and we have a model, add head bob.
+	// (Head bob for main hand model added by the weapon itself.)
+	/*if ( ViewModelIndex() == HOSTAGE_VIEWMODEL )
+	{
+		CalNewViewModelBobbing( owner, &m_BobState, HOSTAGE_VIEWMODEL );
+		AddNewViewModelBobbing( eyePosition, eyeAngles, &m_BobState );
+	}*/
+#endif
+}
 
 #ifdef CLIENT_DLL
 ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.1", FCVAR_CLIENTDLL );
