@@ -230,6 +230,7 @@ public:
 	Activity m_Activity;
 
 	// Predicted variables.
+	CNetworkVar( bool, m_bIsScoped );
 	CNetworkVar( bool, m_bResumeZoom );
 	CNetworkVar( int , m_iLastZoom ); // after firing a shot, set the FOV to 90, and after showing the animation, bring the FOV back to last zoom level.
 	CNetworkVar( CSPlayerState, m_iPlayerState );	// SupraFiend: this gives the current state in the joining process, the states are listed above

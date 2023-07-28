@@ -599,6 +599,7 @@ protected:
 public:
 
 	// Predicted variables.
+	CNetworkVar( bool, m_bIsScoped );
 	CNetworkVar( bool, m_bResumeZoom );
 	CNetworkVar( int , m_iLastZoom ); // after firing a shot, set the FOV to 90, and after showing the animation, bring the FOV back to last zoom level.
 	CNetworkVar( bool, m_bIsDefusing );			// tracks whether this player is currently defusing a bomb

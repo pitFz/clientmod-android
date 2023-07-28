@@ -14,14 +14,14 @@
 #include "basegrenade_shared.h"
 #include "npcevent.h"
 #include "eventlist.h"
-#include "predicted_viewmodel.h"
+
 
 
 
 #define ALLOW_WEAPON_SPREAD_DISPLAY	0
 
 #if defined( CLIENT_DLL )
-
+	#include "predicted_viewmodel.h"
 	#include "vgui/ISurface.h"
 	#include "vgui_controls/Controls.h"
 	#include "c_cs_player.h"
@@ -1010,7 +1010,8 @@ bool CWeaponCSBase::Deploy()
 #ifdef CLIENT_DLL
 	m_iAlpha =  80;
 	if ( pPlayer )
-	{
+	{	
+		pPlayer->m_bIsScoped = false;
 		pPlayer->m_iLastZoom = 0;
 		pPlayer->SetFOV( pPlayer, 0 );
 	}
@@ -1427,6 +1428,9 @@ void CWeaponCSBase::DefaultTouch(CBaseEntity *pOther)
 			if( pPlayer && pPlayer->GetFOV() < pPlayer->GetDefaultFOV() && HideViewModelWhenZoomed() )
 				return true;
 
+			if ( pPlayer && pPlayer->GetFOV() != pPlayer->GetDefaultFOV() && pPlayer->m_bIsScoped )
+				return true;
+				
 			CEffectData data;
 			data.m_fFlags = 0;
 			data.m_hEntity = pViewModel->GetRefEHandle();

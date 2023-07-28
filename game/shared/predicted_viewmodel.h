@@ -31,11 +31,7 @@ public:
 	virtual ~CPredictedViewModel( void );
 							
 	virtual void CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles );
-	virtual void AddViewModelBob( CBasePlayer *owner, Vector& eyePosition, QAngle& eyeAngles );
-
-#if defined( CLIENT_DLL )
-	BobState_t	&GetBobState() { return m_BobState;}
-#endif //CLIENT_DLL
+	
 
 #if defined( CLIENT_DLL )
 	virtual bool ShouldPredict( void )
@@ -56,8 +52,7 @@ private:
 	QAngle m_vLagAngles;
 
 	CPredictedViewModel( const CPredictedViewModel & ); // not defined, not accessible
-	protected:
-	BobState_t		m_BobState;		// view model head bob state
+	
 #endif
 };
 
