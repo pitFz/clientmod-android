@@ -6,10 +6,12 @@
 #include "cbase.h"
 #include "predicted_viewmodel.h"
 
-#ifdef CLIENT_DLL
-#include "prediction.h"
-#include "c_cs_player.h"
-#endif
+#ifdef CLIENT_DLL 
+ #include "prediction.h" 
+ #ifdef CSTRIKE_DLL
+ #include "c_cs_player.h" 
+ #endif 
+ #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -48,7 +50,32 @@ CPredictedViewModel::~CPredictedViewModel()
 #ifdef CLIENT_DLL
 ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.1", FCVAR_CLIENTDLL );
 ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "1.0", FCVAR_CLIENTDLL|FCVAR_CHEAT );
-#endif
+
+#ifdef CSTRIKE_DLL
+ extern ConVar        cmod_new_bobbing; 
+ #endif //cstrike_dll 
+#endif //client_dll
+
+//----------------------------------------------------------------------------- 
+ // Purpose:  Adds head bob for off hand models 
+ //----------------------------------------------------------------------------- 
+ void CPredictedViewModel::AddViewModelBob( CBasePlayer *owner, Vector& eyePosition, QAngle& eyeAngles ) 
+ { 
+ #ifdef CSTRIKE_DLL
+ #ifdef CLIENT_DLL 
+         if ( cmod_new_bobbing.GetBool() == false ) 
+                 return; 
+  
+         // if we are an off hand view model (index 1) and we have a model, add head bob. 
+         // (Head bob for main hand model added by the weapon itself.) 
+         if ( ViewModelIndex() == 1 && m_bShouldIgnoreOffsetAndAccuracy ) 
+         { 
+                 CalcViewModelBobHelper( owner, &m_BobState, 1 ); 
+                 AddViewModelBobHelper( eyePosition, eyeAngles, &m_BobState ); 
+         } 
+ #endif 
+ #endif 
+ }
 
 void CPredictedViewModel::CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles )
 {
