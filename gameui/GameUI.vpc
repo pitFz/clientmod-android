@@ -84,6 +84,10 @@ $Project "GameUI"
 		$File	"CreateMultiplayerGameDialog.h"
 		$File	"CreateMultiplayerGameGameplayPage.h"
 		$File	"CreateMultiplayerGameServerPage.h"
+
+        $File	"ModMenu\ClientModMainMenu.h"
+		$File	"ModMenu\ClientModMenuWindow.h"
+
 		$File	"EngineInterface.h"
 		$File	"GameConsole.h"
 		$File	"GameUI_Interface.h"
