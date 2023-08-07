@@ -32,7 +32,7 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Basic help dialog
 //-----------------------------------------------------------------------------
-ClientModMainMenu::ClientModMainMenu( vgui::Panel *parent ): vgui::PropertyPage( parent, "ModOptionsSubGameplay" )
+ClientModMainMenu::ClientModMainMenu( vgui::Panel *parent ): vgui::PropertyPage( parent, "ClientModMainMenu" )
 {
 	Button *cancel = new Button( this, "Cancel", "#GameUI_Cancel" );
 	cancel->SetCommand( "Close" );

@@ -34,7 +34,7 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Basic help dialog
 //-----------------------------------------------------------------------------
-ClientModMenuWindow::ClientModMenuWindow(vgui::Panel *parent) : PropertyDialog(parent, "OptionsDialog")
+ClientModMenuWindow::ClientModMenuWindow(vgui::Panel *parent) : PropertyDialog(parent, "ClientModMenuWindow")
 {
 	SetDeleteSelfOnClose(true);
 	SetBounds(0, 0, 512, 406);
