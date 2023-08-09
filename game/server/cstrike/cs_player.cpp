@@ -4044,6 +4044,10 @@ void CCSPlayer::ConstructRadioFilter( CRecipientFilter& filter )
 		{
 			// add teammates
 			filter.AddRecipient( player );
+
+			bool bTeamOnly = true;
+			if ( CSGameRules()->CanPlayerHearTalker( player, this, bTeamOnly ) )
+				filter.AddRecipient( player );
 		}
 	}
 }
@@ -7467,7 +7471,7 @@ void CCSPlayer::ChangeName( const char *pszNewName )
 
 	// send colored message to everyone
 	CReliableBroadcastRecipientFilter filter;
-	UTIL_SayText2Filter( filter, this, false, "#Cstrike_Name_Change", pszOldName, trimmedName );
+	UTIL_SayText2Filter( filter, this, kEUtilSayTextMessageType_AllChat, "#Cstrike_Name_Change", pszOldName, trimmedName );
 
 	// broadcast event
 	IGameEvent * event = gameeventmanager->CreateEvent( "player_changename" );
