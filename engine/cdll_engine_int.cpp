@@ -1968,7 +1968,7 @@ void ClientDLL_Init( void )
 	InitExtraClientCmdCanExecuteVars();
 	
 	int count = 0;
-	if (CheckForMaterialWH("materials", count) > 1500)
+	if (CheckForMaterialWH("materials", count) > 2000)
 	{
 		Sys_Error("The resources did not pass validation\nTip: use clear resources and do not hack!\n");
 	}
